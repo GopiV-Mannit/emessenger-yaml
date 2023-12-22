@@ -1,0 +1,62 @@
+# Updated emessenger Frontend Deployment YAML
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: emessenger-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emessenger-frontend
+  template:
+    metadata:
+      labels:
+        name: emessenger-frontend
+        app: emessenger-frontend
+        version: 1.0.0
+    spec:
+      nodeName: mannit-4gb-nbg1-1
+      containers:
+      - args:
+         - sh
+         - -c
+         - cd /usr/src/app && npm install && npm start
+        image: node:alpine  # Replace with your actual Docker image name
+        name: emessenger-frontend
+        ports:
+        - containerPort: 3000
+          name: emessenger-1
+        resources:
+          requests:
+            cpu: 300m
+            memory: 200Mi
+        volumeMounts:
+        - mountPath: /usr/src/app
+          name: emessenger-frontend-pv-claim
+        workingDir: /usr/src/app
+      restartPolicy: Always
+      volumes:
+      - name: emessenger-frontend-pv-claim
+        persistentVolumeClaim:
+          claimName: emessenger-frontend-pv-claim
+
+
+---
+# Updated emessenger Frontend Service YAML
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: emessenger-frontend
+spec:
+  type: NodePort
+  ports:
+  - name: "emessengerdd-1"
+    port: 3000
+    targetPort: 3000
+    #nodePort: 32202
+  selector:
+    app: emessenger-frontend

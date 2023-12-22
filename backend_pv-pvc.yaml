@@ -1,0 +1,37 @@
+# PersistentVolume for emessenger Backend
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: dev
+  name: emessenger-backend-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /opt/Dev/deploy-src/e-messenger-latest/backend
+    server: 128.140.108.46
+
+---
+# PersistentVolumeClaim for emessenger Backend
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: dev
+  name: emessenger-backend-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: slow
+  resources:
+    requests:
+      storage: 1Gi

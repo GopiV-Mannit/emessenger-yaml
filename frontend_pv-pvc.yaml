@@ -1,0 +1,39 @@
+
+# emessenger Frontend PersistentVolume (PV) YAML
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: dev
+  name: emessenger-frontend-pv
+spec:
+  capacity:
+    storage: 1Gi  # Adjust storage capacity as needed
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /opt/Dev/deploy-src/e-messenger-latest/frontend  # Replace with your actual NFS path
+    server: 128.140.108.46  # Replace with your actual NFS server IP
+
+
+---
+# emessenger Frontend PersistentVolumeClaim (PVC) YAML
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+   namespace: dev
+   name: emessenger-frontend-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: slow
+  resources:
+    requests:
+      storage: 1Gi  # Should match the capacity specified in the corresponding PV
